@@ -24,6 +24,38 @@ const getAllInStcok = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateInStcok = catchAsync(async (req: Request, res: Response) => {
+  const { stockInId } = req.params;
+
+  const updateData = req.body;
+  const result = await inStcokService.updateStockInIntoDb(
+    stockInId,
+    updateData,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product deleted successfully',
+    data: result,
+  });
+});
+
+const updateProductInStock = catchAsync(async (req: Request, res: Response) => {
+  const { stockInId, productId } = req.params;
+  // console.log(req.params, 'params');
+  const result = await inStcokService.updateProductInStockIntoDb(
+    stockInId,
+    productId,
+    req.body,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product Update successfully',
+    data: result,
+  });
+});
+
 const deleteProductFromStockIn = catchAsync(
   async (req: Request, res: Response) => {
     const { stockInId, productId } = req.params;
@@ -44,4 +76,6 @@ export const inStcokController = {
   createInStcok,
   getAllInStcok,
   deleteProductFromStockIn,
+  updateInStcok,
+  updateProductInStock,
 };

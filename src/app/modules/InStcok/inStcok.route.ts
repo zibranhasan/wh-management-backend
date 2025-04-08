@@ -10,6 +10,11 @@ router.post(
   validateRequest(stockInValidationSchema),
   inStcokController.createInStcok,
 );
+router.put('/:stockInId', inStcokController.updateInStcok);
+router.put(
+  '/updateProductFromStockIn/:stockInId/:productId',
+  inStcokController.updateProductInStock,
+);
 router.delete(
   '/deleteProductFromStockIn/:stockInId/:productId',
   inStcokController.deleteProductFromStockIn,
