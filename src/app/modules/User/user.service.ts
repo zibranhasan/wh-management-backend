@@ -18,6 +18,26 @@ const createSingupIntoDb = async (file: any, payload: IUser) => {
   return result;
 };
 
+const singleUserDelete = async (payload: string) => {
+  const isUser = await User.isUserExistsByEmail(payload);
+
+  if (!isUser) {
+    throw new Error('This user is not found');
+  }
+  const isDeleted = isUser?.isDeleted;
+  if (isDeleted) {
+    throw new Error('This user is already deleted');
+  }
+
+  const result = await User.findOneAndUpdate(
+    { email: payload },
+    { isDeleted: true },
+    { new: true },
+  );
+  return result;
+};
+
 export const userService = {
   createSingupIntoDb,
+  singleUserDelete,
 };

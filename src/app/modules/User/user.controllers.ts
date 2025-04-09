@@ -18,6 +18,19 @@ const Createsignup = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const singleUserDelete = catchAsync(async (req: Request, res: Response) => {
+  const { email } = req.params;
+
+  const result = await userService.singleUserDelete(email);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User deleted successfully',
+    data: result,
+  });
+});
+
 export const userController = {
   Createsignup,
+  singleUserDelete,
 };

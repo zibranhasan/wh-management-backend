@@ -68,7 +68,7 @@ const updateBuyerDueAmount = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Buyer deleted successfully',
+    message: 'Due Amount Updated successfully',
     data: result,
   });
 });

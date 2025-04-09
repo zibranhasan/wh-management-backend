@@ -21,7 +21,7 @@ const stockOutSchema = new Schema<ToutStock>({
   },
   totalAmount: Number,
   paidAmount: { type: Number, default: 0 },
-  dueAmount: Number,
+  dueAmount: { type: Number, default: 0 },
   isDeleted: { type: Boolean, default: false },
 });
 

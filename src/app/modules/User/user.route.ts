@@ -18,5 +18,10 @@ router.post(
   validateRequest(userValidationSchemas.signupValidationSchema),
   userController.Createsignup,
 );
+router.delete(
+  '/:email',
+
+  userController.singleUserDelete,
+);
 
 export const userRoutes = router;
