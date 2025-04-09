@@ -4,4 +4,5 @@ export type TBuyer = {
   address: string;
   totalPurchase?: number;
   totalDue?: number;
+  isDeleted?: boolean;
 };

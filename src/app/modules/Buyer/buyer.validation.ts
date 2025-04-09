@@ -19,6 +19,7 @@ export const createValidationSchema = z.object({
     totalPurchase: z.number().nonnegative().optional(),
 
     totalDue: z.number().nonnegative().optional(),
+    isDeleted: z.boolean().optional(),
   }),
 });
 

@@ -1,7 +1,6 @@
 import { model, Schema } from 'mongoose';
-import { ToutStock } from './outStock.interface';
-import { Buyer } from '../Buyer/buyer.model';
-import { StockIn } from '../InStcok/inStock.model';
+import { ToutStock } from './stockOut.interface';
+
 const stockOutSchema = new Schema<ToutStock>({
   date: {
     type: Date,
@@ -9,7 +8,7 @@ const stockOutSchema = new Schema<ToutStock>({
   },
   products: {
     type: Schema.Types.ObjectId,
-    ref: 'StockIn', // If you're referencing embedded products
+    ref: 'StockIn',
     required: true,
   },
 
@@ -23,6 +22,7 @@ const stockOutSchema = new Schema<ToutStock>({
   totalAmount: Number,
   paidAmount: { type: Number, default: 0 },
   dueAmount: Number,
+  isDeleted: { type: Boolean, default: false },
 });
 
 export const StockOut = model('StockOut', stockOutSchema);

@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { userRoutes } from '../modules/User/user.route';
 import { authRoutes } from '../modules/Auth/auth.route';
-import { InStcokRoutes } from '../modules/InStcok/inStcok.route';
-import { OutStcokRoutes } from '../modules/stcokOut/outStock.route';
+import { InStcokRoutes } from '../modules/InStock/inStock.route';
+
 import { BuyerRoutes } from '../modules/Buyer/buyer.routes';
+import { stcokOutRoutes } from '../modules/stcokOut/stockOut..route';
 
 const router = Router();
 
@@ -22,7 +23,7 @@ const moduleRoutes = [
   },
   {
     path: '/outStcok',
-    route: OutStcokRoutes,
+    route: stcokOutRoutes,
   },
   {
     path: '/buyer',

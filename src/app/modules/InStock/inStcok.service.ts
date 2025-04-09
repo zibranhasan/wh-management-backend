@@ -84,7 +84,7 @@ const updateProductInStockIntoDb = async (
   return result;
 };
 
-export const inStcokService = {
+export const inStockService = {
   CreateInStockIntoDb,
   deleteProductStockInFromDb,
   getAllInStockFromDb,

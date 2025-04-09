@@ -22,8 +22,41 @@ const getSingleBugerFromDb = async (payload: string) => {
   return result;
 };
 
+const deleteBuyerFromDb = async (payload: string) => {
+  const result = await Buyer.findByIdAndUpdate(
+    { _id: payload },
+
+    { isDeleted: true },
+
+    { new: true },
+  );
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
+  }
+  return result;
+};
+
+const updateBuyerDueAmountFromDb = async (id: string, payload: string) => {
+  const paymentAmount = parseFloat(payload);
+
+  const buyer = await Buyer.findOne({ _id: id, isDeleted: false });
+  console.log(buyer);
+  if (!buyer) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
+  }
+
+  buyer.totalDue = Math.max(0, (buyer.totalDue ?? 0) - paymentAmount);
+
+  await buyer.save();
+
+  return buyer;
+};
+
 export const buyerService = {
   createBuyerIntoDb,
   getAllBuyersFromDb,
   getSingleBugerFromDb,
+  deleteBuyerFromDb,
+  updateBuyerDueAmountFromDb,
 };

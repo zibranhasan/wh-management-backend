@@ -4,7 +4,8 @@ import sendResponse from '../../utils/sendResponse';
 
 import httpStatus from 'http-status';
 import { buyerService } from './buyer.service';
-import { TBuyer } from './buyer.interface';
+import AppError from '../../errors/AppError';
+
 const createBuyer = catchAsync(async (req: Request, res: Response) => {
   const result = await buyerService.createBuyerIntoDb(req.body);
 
@@ -36,9 +37,46 @@ const getSingleBuyer = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const deleteBuyer = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await buyerService.deleteBuyerFromDb(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Buyer deleted successfully',
+    data: result,
+  });
+});
+
+const updateBuyerDueAmount = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { paymentAmount } = req.body;
+  console.log(id, paymentAmount);
+  if (!paymentAmount || paymentAmount <= 0) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Please provide a valid payment amount',
+    );
+  }
+
+  const result = await buyerService.updateBuyerDueAmountFromDb(
+    id,
+    paymentAmount,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Buyer deleted successfully',
+    data: result,
+  });
+});
 
 export const buyerController = {
   createBuyer,
   getAllBuyers,
   getSingleBuyer,
+  deleteBuyer,
+  updateBuyerDueAmount,
 };

@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
-import { inStcokService } from './inStcok.service';
-const createInStcok = catchAsync(async (req: Request, res: Response) => {
+import { inStockService } from './inStcok.service';
+const createInStock = catchAsync(async (req: Request, res: Response) => {
   console.log(req.body, 'body');
-  const result = await inStcokService.CreateInStockIntoDb(req.body);
+  const result = await inStockService.CreateInStockIntoDb(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -14,8 +14,8 @@ const createInStcok = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllInStcok = catchAsync(async (req: Request, res: Response) => {
-  const result = await inStcokService.getAllInStockFromDb();
+const getAllInStock = catchAsync(async (req: Request, res: Response) => {
+  const result = await inStockService.getAllInStockFromDb();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -24,11 +24,11 @@ const getAllInStcok = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateInStcok = catchAsync(async (req: Request, res: Response) => {
+const updateInStock = catchAsync(async (req: Request, res: Response) => {
   const { stockInId } = req.params;
 
   const updateData = req.body;
-  const result = await inStcokService.updateStockInIntoDb(
+  const result = await inStockService.updateStockInIntoDb(
     stockInId,
     updateData,
   );
@@ -43,7 +43,7 @@ const updateInStcok = catchAsync(async (req: Request, res: Response) => {
 const updateProductInStock = catchAsync(async (req: Request, res: Response) => {
   const { stockInId, productId } = req.params;
   // console.log(req.params, 'params');
-  const result = await inStcokService.updateProductInStockIntoDb(
+  const result = await inStockService.updateProductInStockIntoDb(
     stockInId,
     productId,
     req.body,
@@ -59,7 +59,7 @@ const updateProductInStock = catchAsync(async (req: Request, res: Response) => {
 const deleteProductFromStockIn = catchAsync(
   async (req: Request, res: Response) => {
     const { stockInId, productId } = req.params;
-    const result = await inStcokService.deleteProductStockInFromDb(
+    const result = await inStockService.deleteProductStockInFromDb(
       stockInId,
       productId,
     );
@@ -72,10 +72,10 @@ const deleteProductFromStockIn = catchAsync(
   },
 );
 
-export const inStcokController = {
-  createInStcok,
-  getAllInStcok,
+export const inStockController = {
+  createInStock,
+  getAllInStock,
   deleteProductFromStockIn,
-  updateInStcok,
+  updateInStock,
   updateProductInStock,
 };
