@@ -15,14 +15,13 @@ const signupValidationSchema = z.object({
       required_error: 'Phone is required',
       invalid_type_error: 'Phone must be a string',
     }),
-    image: z.string({
-      required_error: 'Phone is required',
-      invalid_type_error: 'Phone must be a string',
-    }),
+    image: z
+      .string({
+        invalid_type_error: 'image must be a string',
+      })
+      .optional(),
 
-    role: z.enum(['admin', 'user'], {
-      required_error: 'Role is required',
-    }),
+    role: z.enum(['admin', 'user']).optional(),
     isDeleted: z.boolean().optional(),
   }),
 });

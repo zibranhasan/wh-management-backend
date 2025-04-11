@@ -27,7 +27,7 @@ const loginUser = async (payload: TLoginUser) => {
 
   //      console.log(isUserExists?.password)
   if (!(await User.isPasswordMatch(payload.password, user?.password))) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This password flase');
+    throw new AppError(httpStatus.FORBIDDEN, 'User Invaild');
   }
 
   const jwtPayload = {

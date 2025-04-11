@@ -9,7 +9,6 @@ export interface IUser {
   role: 'admin' | 'user';
   phone: string;
   image: string;
-
   address: string;
   createdAt: Date;
   updatedAt: Date;

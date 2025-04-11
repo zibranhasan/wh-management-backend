@@ -4,6 +4,15 @@ import { IUser } from './user.interface';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 const createSingupIntoDb = async (file: any, payload: IUser) => {
+  if (!payload) {
+    throw new Error('Payload is required');
+  }
+
+  const isUser = await User.isUserExistsByEmail(payload?.email);
+  if (isUser) {
+    throw new Error('This user is already exists');
+  }
+
   if (file) {
     const imageName = `${payload?.name}`;
     const path = file?.path;
@@ -12,7 +21,7 @@ const createSingupIntoDb = async (file: any, payload: IUser) => {
     const { secure_url } = await sendImageToCloudinary(imageName, path);
     payload.image = secure_url as string;
   }
-
+  payload.role = 'user';
   const result = await User.create(payload);
 
   return result;

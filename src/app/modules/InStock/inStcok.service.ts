@@ -2,6 +2,7 @@ import { StockIn } from './inStock.model';
 import { TStockIn } from './inStock.interface';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
+
 const CreateInStockIntoDb = async (data: TStockIn) => {
   console.log(data, 'data');
   const result = await StockIn.create(data);

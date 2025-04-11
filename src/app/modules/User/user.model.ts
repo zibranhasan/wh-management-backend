@@ -10,7 +10,7 @@ const userSchema = new Schema<IUser, UserModel>(
     password: { type: String, required: true, select: 0 },
     role: { type: String, enum: ['admin', 'user'], required: true },
     phone: { type: String, required: true },
-    image: { type: String, required: true },
+    image: { type: String, default: '' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     isDeleted: { type: Boolean, default: false },
