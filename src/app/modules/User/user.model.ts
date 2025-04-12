@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 
 const userSchema = new Schema<IUser, UserModel>(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: [true, 'Name is Required'] },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: 0 },
     role: { type: String, enum: ['admin', 'user'], required: true },
