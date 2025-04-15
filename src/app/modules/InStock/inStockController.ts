@@ -71,11 +71,24 @@ const deleteProductFromStockIn = catchAsync(
     });
   },
 );
+const deleteStockFromStockIn = catchAsync(
+  async (req: Request, res: Response) => {
+    const { stockInId } = req.params;
+    const result = await inStockService.deleteStockInIntoDb(stockInId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Instock deleted successfully',
+      data: result,
+    });
+  },
+);
 
 export const inStockController = {
   createInStock,
   getAllInStock,
   deleteProductFromStockIn,
   updateInStock,
+  deleteStockFromStockIn,
   updateProductInStock,
 };

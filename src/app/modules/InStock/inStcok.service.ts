@@ -10,7 +10,9 @@ const CreateInStockIntoDb = async (data: TStockIn) => {
 };
 
 const getAllInStockFromDb = async () => {
-  const result = await StockIn.find({}).sort({ createdAt: -1 });
+  const result = await StockIn.find({ isDeleted: false }).sort({
+    createdAt: -1,
+  });
 
   return result;
 };
@@ -39,6 +41,19 @@ const updateStockInIntoDb = async (
   const result = await StockIn.findOneAndUpdate(
     { _id: stockInId },
     { $set: updateData },
+    { new: true },
+  );
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'StockIn document not found');
+  }
+
+  return result;
+};
+const deleteStockInIntoDb = async (stockInId: string) => {
+  const result = await StockIn.findByIdAndUpdate(
+    { _id: stockInId },
+    { isDeleted: true },
     { new: true },
   );
 
@@ -91,4 +106,5 @@ export const inStockService = {
   getAllInStockFromDb,
   updateStockInIntoDb,
   updateProductInStockIntoDb,
+  deleteStockInIntoDb,
 };

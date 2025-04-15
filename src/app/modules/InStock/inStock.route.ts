@@ -28,6 +28,7 @@ router.delete(
   '/deleteProductFromStockIn/:stockInId/:productId',
   inStockController.deleteProductFromStockIn,
 );
+router.delete('/:stockInId', inStockController.deleteStockFromStockIn);
 router.get('/getAllInStcok', inStockController.getAllInStock);
 
 export const InStcokRoutes = router;
