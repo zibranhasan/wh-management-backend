@@ -19,6 +19,7 @@ router.put(
   validateRequest(updateStockInValidationSchema),
   inStockController.updateInStock,
 );
+router.delete('/:stockInId', inStockController.deleteStockFromStockIn);
 router.put(
   '/updateProductFromStockIn/:stockInId/:productId',
   validateRequest(updateProductValidationSchema),
@@ -28,7 +29,7 @@ router.delete(
   '/deleteProductFromStockIn/:stockInId/:productId',
   inStockController.deleteProductFromStockIn,
 );
-router.delete('/:stockInId', inStockController.deleteStockFromStockIn);
+
 router.get('/getAllInStcok', inStockController.getAllInStock);
 
 export const InStcokRoutes = router;
