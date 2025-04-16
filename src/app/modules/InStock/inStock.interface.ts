@@ -1,15 +1,20 @@
+import { ObjectId } from 'mongoose';
+
 export type TProduct = {
-  productName: string;
-  productQuantity: number;
-  productPrice: number;
+  name: string;
+  unit: string;
   isDeleted?: boolean;
+  date?: Date;
 };
 
 export type TStockIn = {
+  productId: ObjectId;
+  name: string;
+  quantity: number;
+  price: number;
   invoiceNumber: string;
-  vehicleNumber?: string;
+  vehicleNumber: string;
   supplierName: string;
-  products: TProduct[];
   date?: Date;
   isDeleted?: boolean;
 };

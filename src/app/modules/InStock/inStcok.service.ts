@@ -1,11 +1,24 @@
 import { StockIn } from './inStock.model';
 import { TStockIn } from './inStock.interface';
+import { Product } from '../product/product.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
 const CreateInStockIntoDb = async (data: TStockIn) => {
-  console.log(data, 'data');
-  const result = await StockIn.create(data);
+  // Find the product by ID
+  const product = await Product.findById(data.productId);
+
+  if (!product) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
+  }
+
+  // Set the product name in the stock data
+  const stockData = {
+    ...data,
+    name: product.name,
+  };
+
+  const result = await StockIn.create(stockData);
   return result;
 };
 

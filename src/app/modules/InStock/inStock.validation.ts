@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 export const productValidationSchema = z.object({
-  productName: z.string().min(1, 'Product name is required'),
-  productQuantity: z.number().min(1, 'Quantity must be at least 1'),
-  productPrice: z.number().min(0, 'Price must be non-negative'),
+  body: z.object({
+    name: z.string().min(3, 'Product name is required'),
+  }),
 });
 
 export const stockInValidationSchema = z.object({
@@ -11,7 +11,9 @@ export const stockInValidationSchema = z.object({
     invoiceNumber: z.string().min(1, 'Invoice number is required'),
     vehicleNumber: z.string().optional(),
     supplierName: z.string().min(1, 'Supplier name is required'),
-    products: z.array(productValidationSchema),
+    productId: z.string(),
+    quantity: z.number().min(1, 'quantity must be 1'),
+    price: z.number().min(1, 'quantity must be 1'),
     date: z.date().optional(),
   }),
 });
