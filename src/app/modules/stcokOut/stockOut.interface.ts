@@ -2,9 +2,11 @@ import { ObjectId } from 'mongoose';
 
 export type ToutStock = {
   date?: Date;
-  products: ObjectId;
+  buyerPhone: string;
+  product: ObjectId;
   paidAmount?: number;
   totalAmount: number;
+  productName: string;
   quantity: number;
   buyerName: ObjectId;
   salesman: ObjectId;

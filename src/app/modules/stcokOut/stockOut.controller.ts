@@ -4,6 +4,8 @@ import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import { StcokOutService } from './stockOut.service';
 const createstockOut = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  console.log(user, 'ljlk');
   const result = await StcokOutService.CreateStockOutIntoDb(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,

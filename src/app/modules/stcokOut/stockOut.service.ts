@@ -1,4 +1,3 @@
- 
 import { ToutStock } from './stockOut.interface';
 import { StockIn } from '../InStock/inStock.model';
 import { StockOut } from './stockOut.model';
@@ -21,37 +20,40 @@ const CreateStockOutIntoDb = async (payload: ToutStock) => {
   session.startTransaction(); // Start the transaction
 
   try {
-    const {
-      date,
-      products,
-      paidAmount = 0,
-      quantity,
-      buyerName,
-      salesman,
-    } = payload;
-
-    const product = await StockIn.findOne(
-      { 'products._id': products },
-      { 'products.$': 1 },
-      { session },
-    );
-
-    if (!product || !product.products || product.products.length === 0) {
+    const { name, paidAmount = 0, quantity, buyerPhone } = payload;
+    console.log(name, 'dd');
+    const product = await StockIn.findOne({ _id: name });
+    if (!product) {
       throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
     }
 
-    const productPrice = product.products[0].productPrice;
+    console.log(product);
+
+    if (product.quantity < quantity) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Not enough quantity in stock',
+      );
+    }
+    const isBuyer = await Buyer.findOne({ phone: buyerPhone });
+
+    if (!isBuyer) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Buyer Not Founded');
+    }
+
+    const productPrice = product?.price;
 
     const totalAmount = productPrice * quantity;
     const dueAmount = totalAmount - paidAmount;
 
     const result = await StockIn.updateOne(
-      { 'products._id': products },
+      { _id: product?._id },
       {
-        $inc: { 'products.$.productQuantity': -quantity },
+        $inc: { quantity: -quantity },
       },
-      { session }, // Pass the session
+      { session },
     );
+    console.log(result);
 
     if (result.modifiedCount === 0) {
       throw new AppError(
@@ -63,27 +65,32 @@ const CreateStockOutIntoDb = async (payload: ToutStock) => {
     const outStockRecord = await StockOut.create(
       [
         {
-          date,
-          products,
+          product: name,
           paidAmount,
           totalAmount,
+          productName: product?.name,
           quantity,
-          buyerName,
-          salesman,
+          buyerName: isBuyer._id,
+          buyerPhone: isBuyer.phone,
+          salesman: '67f39d2e47e09dc04b79942a',
           dueAmount,
         },
       ],
       { session },
     );
 
-    /* The code snippet `const buyerUpdate = await Buyer.findByIdAndUpdate(buyerName, { : {
-  totalPurchase: totalAmount, totalDue: dueAmount } }, { session, new: true });` is updating the
-  buyer's information in the database. */
-
     const buyerUpdate = await Buyer.findByIdAndUpdate(
-      buyerName,
+      isBuyer._id,
       {
         $inc: { totalPurchase: totalAmount, totalDue: dueAmount },
+        $push: {
+          products: {
+            productId: product._id,
+            productName: product.name,
+            quantity,
+            orderDate: new Date(),
+          },
+        },
       },
       { session, new: true },
     );

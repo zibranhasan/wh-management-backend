@@ -9,6 +9,15 @@ const buyerSchema = new Schema<TBuyer>({
     maxlength: 11,
     unique: true,
   },
+  products: [
+    {
+      productId: { type: Schema.Types.ObjectId, ref: 'StockIn.products' },
+      productName: { type: String, required: true },
+      quantity: { type: Number, required: true },
+      orderDate: { type: Date, default: Date.now },
+    },
+  ],
+
   address: { type: String },
   totalPurchase: { type: Number, default: 0 },
   totalDue: { type: Number, default: 0 },

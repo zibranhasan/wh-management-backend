@@ -6,20 +6,21 @@ const stockOutSchema = new Schema<ToutStock>({
     type: Date,
     default: Date.now,
   },
-  products: {
+  product: {
     type: Schema.Types.ObjectId,
     ref: 'StockIn',
     required: true,
   },
-
+  productName: { type: String, requied: true },
   quantity: { type: Number, required: true },
   buyerName: { type: Schema.Types.ObjectId, ref: 'Buyer', required: true },
+  buyerPhone: { type: String, required: true },
   salesman: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
-  totalAmount: Number,
+  totalAmount: { type: Number, default: 0 },
   paidAmount: { type: Number, default: 0 },
   dueAmount: { type: Number, default: 0 },
   isDeleted: { type: Boolean, default: false },

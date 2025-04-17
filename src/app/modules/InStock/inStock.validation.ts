@@ -23,6 +23,9 @@ export const updateStockInValidationSchema = z.object({
     vehicleNumber: z.string().optional(),
     supplierName: z.string().min(1, 'Supplier name is required').optional(),
     products: z.array(productValidationSchema).optional(),
+    productId: z.string().optional(),
+    quantity: z.number().min(1, 'quantity must be 1').optional(),
+    price: z.number().min(1, 'quantity must be 1').optional(),
     date: z.date().optional().optional(),
   }),
 });
