@@ -32,4 +32,6 @@ router.delete(
 
 router.get('/getAllInStcok', inStockController.getAllInStock);
 
+router.get('/dashboard', inStockController.getDashboardStats);
+
 export const InStcokRoutes = router;

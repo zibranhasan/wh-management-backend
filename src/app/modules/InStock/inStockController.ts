@@ -83,6 +83,15 @@ const deleteStockFromStockIn = catchAsync(
     });
   },
 );
+const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
+  const result = await inStockService.getDashboardStatsIntoDb();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'DashBoardStatus get successfully',
+    data: result,
+  });
+});
 
 export const inStockController = {
   createInStock,
@@ -91,4 +100,5 @@ export const inStockController = {
   updateInStock,
   deleteStockFromStockIn,
   updateProductInStock,
+  getDashboardStats,
 };

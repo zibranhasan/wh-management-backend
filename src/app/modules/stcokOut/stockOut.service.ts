@@ -124,6 +124,96 @@ const getAllStcokOutFromDb = async () => {
   return result;
 };
 
+const getLast30DaysSalesFromDb = async () => {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  thirtyDaysAgo.setHours(0, 0, 0, 0);
+
+  console.log(thirtyDaysAgo);
+
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  // Aggregate sales data for the last 30 days
+  const dailySales = await StockOut.aggregate([
+    {
+      $match: {
+        isDeleted: false,
+        date: { $gte: thirtyDaysAgo, $lte: today },
+      },
+    },
+    {
+      $group: {
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
+        totalAmount: { $sum: '$totalAmount' },
+        totalRevenue: { $sum: { $multiply: ['$quantity', '$price'] } },
+        count: { $sum: 1 }, // Number of transactions
+      },
+    },
+    { $sort: { _id: 1 } }, // Sort by date ascending
+  ]);
+
+  console.log(dailySales, 'dfsdf');
+
+  const last30Days = [];
+  for (let i = 0; i < 30; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - (29 - i));
+    date.setHours(0, 0, 0, 0);
+
+    const dateString = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    const salesForDay = dailySales.find((day) => day._id === dateString);
+    console.log(salesForDay);
+
+    last30Days.push({
+      date: dateString,
+      totalSales: salesForDay ? salesForDay?.totalAmount : 0,
+      totalRevenue: salesForDay ? salesForDay.totalRevenue : 0,
+      transactionCount: salesForDay ? salesForDay.count : 0,
+    });
+  }
+
+  // Calculate summary statistics
+  const totalSales = last30Days.reduce((sum, day) => sum + day.totalSales, 0);
+  console.log(totalSales);
+  const totalRevenue = last30Days.reduce(
+    (sum, day) => sum + day.totalRevenue,
+    0,
+  );
+  const totalTransactions = last30Days.reduce(
+    (sum, day) => sum + day.transactionCount,
+    0,
+  );
+
+  // Calculate daily averages
+  const avgDailySales = totalSales / 30;
+  const avgDailyRevenue = totalRevenue / 30;
+  console.log(avgDailyRevenue);
+  console.log(avgDailySales);
+  // Find peak day
+  const peakSalesDay = [...last30Days].sort(
+    (a, b) => b.totalSales - a.totalSales,
+  )[0];
+
+  return {
+    data: {
+      dailyData: last30Days,
+      summary: {
+        totalSales,
+        totalRevenue,
+        totalTransactions,
+        avgDailySales,
+        avgDailyRevenue,
+        peakDay: {
+          date: peakSalesDay.date,
+          sales: peakSalesDay.totalSales,
+          revenue: peakSalesDay.totalRevenue,
+        },
+      },
+    },
+  };
+};
+
 const deletedSingleStcokOutFromDb = async (id: string) => {
   const result = await StockOut.findByIdAndUpdate(
     id,
@@ -142,4 +232,5 @@ export const StcokOutService = {
   CreateStockOutIntoDb,
   getAllStcokOutFromDb,
   deletedSingleStcokOutFromDb,
+  getLast30DaysSalesFromDb,
 };

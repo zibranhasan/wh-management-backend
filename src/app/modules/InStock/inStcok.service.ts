@@ -3,6 +3,7 @@ import { TStockIn } from './inStock.interface';
 import { Product } from '../product/product.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
+import { StockOut } from '../stcokOut/stockOut.model';
 
 const CreateInStockIntoDb = async (data: TStockIn) => {
   // Find the product by ID
@@ -28,6 +29,57 @@ const getAllInStockFromDb = async () => {
   });
 
   return result;
+};
+const getDashboardStatsIntoDb = async () => {
+  const totalSalesResult = await StockOut.aggregate([
+    { $match: { isDeleted: false } },
+    {
+      $group: {
+        _id: null,
+
+        totalAmout: { $sum: '$totalAmount' },
+      },
+    },
+  ]);
+  const totalDueResult = await StockOut.aggregate([
+    { $match: { isDeleted: false } },
+    {
+      $group: {
+        _id: null,
+
+        dueAmount: { $sum: '$dueAmount' },
+      },
+    },
+  ]);
+  const TotalDues = totalDueResult.length > 0 ? totalDueResult[0].dueAmount : 0;
+
+  const totalValueResult = await StockIn.aggregate([
+    { $match: { isDeleted: false } },
+    {
+      $group: {
+        _id: null,
+
+        totalValue: {
+          $sum: { $multiply: ['$quantity', '$price'] },
+        },
+      },
+    },
+  ]);
+
+  // console.log(totalSalesResult);
+  const totalValueNet =
+    totalValueResult.length > 0 ? totalValueResult[0].totalValue : 0;
+
+  // console.log(totalSalesResult);
+  const totalSales =
+    totalSalesResult.length > 0 ? totalSalesResult[0].totalAmout : 0;
+
+  console.log(TotalDues);
+  return {
+    TotalSales: totalSales,
+    TotalDue: TotalDues,
+    TotalNet: totalValueNet,
+  };
 };
 
 const deleteProductStockInFromDb = async (
@@ -120,4 +172,5 @@ export const inStockService = {
   updateStockInIntoDb,
   updateProductInStockIntoDb,
   deleteStockInIntoDb,
+  getDashboardStatsIntoDb,
 };

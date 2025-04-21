@@ -6,6 +6,7 @@ import { InStcokRoutes } from '../modules/InStock/inStock.route';
 import { BuyerRoutes } from '../modules/Buyer/buyer.routes';
 import { stcokOutRoutes } from '../modules/stcokOut/stockOut..route';
 import { prodcutRoute } from '../modules/product/product.route';
+import { splierRoute } from '../modules/splier/splier.route';
 
 const router = Router();
 
@@ -33,6 +34,10 @@ const moduleRoutes = [
   {
     path: '/product',
     route: prodcutRoute,
+  },
+  {
+    path: '/splier',
+    route: splierRoute,
   },
 ];
 

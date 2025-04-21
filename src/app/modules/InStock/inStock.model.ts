@@ -10,11 +10,15 @@ const stockInSchema = new Schema<TStockIn>(
       trim: true,
       minLength: [3, 'Name must be at least 3 characters.'],
     },
+    unit: {
+      type: String,
+      required: true,
+      enum: {
+        values: ['kg', 'litre', 'pcs', 'box'],
+        message: "unit value can't be {VALUE}, must be kg/litre/pcs/bag",
+      },
+    },
     price: { type: Number, required: true },
-    /* The `quantity` field in the `stockInSchema` is defining the number of units of a product that
-    are being added to the stock. It is of type Number and is marked as required, indicating that
-    every stock entry must have a specified quantity value. This field helps in tracking the amount
-    of a particular product that is being received in each stock-in transaction. */
     quantity: { type: Number, required: true },
     invoiceNumber: { type: String, required: true, unique: true },
     vehicleNumber: { type: String },

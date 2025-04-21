@@ -5,6 +5,7 @@ const router = Router();
 router.post('/createOutStcok', stcokOutController.createstockOut);
 
 router.delete('/:id', stcokOutController.deletedSingleStockOut);
+router.get('/getLast30DaysSalesFromDb', stcokOutController.getLast30DaysSales);
 router.get('/', stcokOutController.getAllstockOut);
 
 export const stcokOutRoutes = router;

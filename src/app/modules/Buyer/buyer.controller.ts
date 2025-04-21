@@ -4,7 +4,6 @@ import sendResponse from '../../utils/sendResponse';
 
 import httpStatus from 'http-status';
 import { buyerService } from './buyer.service';
-import AppError from '../../errors/AppError';
 
 const createBuyer = catchAsync(async (req: Request, res: Response) => {
   const result = await buyerService.createBuyerIntoDb(req.body);
@@ -51,19 +50,9 @@ const deleteBuyer = catchAsync(async (req: Request, res: Response) => {
 
 const updateBuyerDueAmount = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { paymentAmount } = req.body;
-  console.log(id, paymentAmount);
-  if (!paymentAmount || paymentAmount <= 0) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Please provide a valid payment amount',
-    );
-  }
+  console.log(req.body);
 
-  const result = await buyerService.updateBuyerDueAmountFromDb(
-    id,
-    paymentAmount,
-  );
+  const result = await buyerService.updateBuyerDueAmountFromDb(id, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

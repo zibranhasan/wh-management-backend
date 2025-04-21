@@ -16,5 +16,6 @@ export type TStockIn = {
   vehicleNumber: string;
   supplierName: string;
   date?: Date;
+  unit: 'kg' | 'pcs' | 'liter' | 'box';
   isDeleted?: boolean;
 };

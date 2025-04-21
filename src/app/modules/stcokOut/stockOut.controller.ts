@@ -25,6 +25,16 @@ const getAllstockOut = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getLast30DaysSales = catchAsync(async (req: Request, res: Response) => {
+  const result = await StcokOutService.getLast30DaysSalesFromDb();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'OutStock retrieved successfully',
+    data: result,
+  });
+});
 
 const deletedSingleStockOut = catchAsync(
   async (req: Request, res: Response) => {
@@ -44,4 +54,5 @@ export const stcokOutController = {
   createstockOut,
   getAllstockOut,
   deletedSingleStockOut,
+  getLast30DaysSales,
 };

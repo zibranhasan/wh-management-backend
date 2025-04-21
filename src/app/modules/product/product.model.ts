@@ -9,6 +9,14 @@ const productSchema = new Schema<TProduct>({
     trim: true,
     minLength: [3, 'Name must be at least 3 characters.'],
   },
+  unit: {
+    type: String,
+    required: true,
+    enum: {
+      values: ['kg', 'litre', 'pcs', 'bag'],
+      message: "unit value can't be {VALUE}, must be kg/litre/pcs/bag",
+    },
+  },
 
   date: {
     type: Date,

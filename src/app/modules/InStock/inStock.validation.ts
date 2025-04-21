@@ -15,8 +15,13 @@ export const stockInValidationSchema = z.object({
     quantity: z.number().min(1, 'quantity must be 1'),
     price: z.number().min(1, 'quantity must be 1'),
     date: z.date().optional(),
+    unit: z.enum(['kg', 'pcs', 'liter', 'box'], {
+      required_error: 'Unit is required',
+      invalid_type_error: 'Unit must be one of: kg, pcs, liter, box',
+    }),
   }),
 });
+
 export const updateStockInValidationSchema = z.object({
   body: z.object({
     invoiceNumber: z.string().min(1, 'Invoice number is required').optional(),
@@ -24,9 +29,15 @@ export const updateStockInValidationSchema = z.object({
     supplierName: z.string().min(1, 'Supplier name is required').optional(),
     products: z.array(productValidationSchema).optional(),
     productId: z.string().optional(),
+    unit: z
+      .enum(['kg', 'pcs', 'liter', 'box'], {
+        required_error: 'Unit is required',
+        invalid_type_error: 'Unit must be one of: kg, pcs, liter, box',
+      })
+      .optional(),
     quantity: z.number().min(1, 'quantity must be 1').optional(),
     price: z.number().min(1, 'quantity must be 1').optional(),
-    date: z.date().optional().optional(),
+    date: z.date().optional(),
   }),
 });
 
