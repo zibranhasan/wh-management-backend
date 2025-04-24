@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { TBuyer } from './buyer.interface';
+
 const buyerSchema = new Schema<TBuyer>({
   name: { type: String, required: true },
   phone: {
@@ -17,10 +18,18 @@ const buyerSchema = new Schema<TBuyer>({
       orderDate: { type: Date, default: Date.now },
     },
   ],
+  totalPay: { type: Number, required: true, default: 0 },
+  address: { type: String },
+  paymentHistory: [
+    {
+      amount: { type: Number, required: true, default: 0 },
+      date: { type: Date, default: Date.now },
+    },
+  ],
 
-  address: { type: String, required: true },
   totalPurchase: { type: Number, default: 0 },
   totalDue: { type: Number, default: 0 },
+  date: { type: Date, default: Date.now },
   isDeleted: { type: Boolean, default: false },
 });
 

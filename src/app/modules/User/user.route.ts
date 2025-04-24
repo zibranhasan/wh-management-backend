@@ -19,9 +19,24 @@ router.post(
   userController.Createsignup,
 );
 router.delete(
-  '/:email',
+  '/:id',
 
   userController.singleUserDelete,
+);
+router.put(
+  '/:id',
+
+  userController.updateUser,
+);
+router.get(
+  '/:id',
+
+  userController.getsingleUser,
+);
+router.get(
+  '/',
+
+  userController.getAlllUser,
 );
 
 export const userRoutes = router;

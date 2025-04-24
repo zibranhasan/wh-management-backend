@@ -19,9 +19,20 @@ const Createsignup = catchAsync(async (req: Request, res: Response) => {
 });
 
 const singleUserDelete = catchAsync(async (req: Request, res: Response) => {
-  const { email } = req.params;
+  const { id } = req.params;
 
-  const result = await userService.singleUserDelete(email);
+  const result = await userService.singleUserDelete(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User deleted successfully',
+    data: result,
+  });
+});
+const getsingleUser = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await userService.getsingleUserIntoDb(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -30,7 +41,34 @@ const singleUserDelete = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateUser = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const updateData = req.body;
+  const result = await userService.updateUserInIntoDb(id, updateData);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Product deleted successfully',
+    data: result,
+  });
+});
+
+const getAlllUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await userService.getAlllUserIntoDb();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'All User Get successfully',
+    data: result,
+  });
+});
+
 export const userController = {
   Createsignup,
   singleUserDelete,
+  updateUser,
+  getAlllUser,
+  getsingleUser,
 };

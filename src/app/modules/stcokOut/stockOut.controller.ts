@@ -4,19 +4,21 @@ import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import { StcokOutService } from './stockOut.service';
 const createstockOut = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user;
-  console.log(user, 'ljlk');
-  const result = await StcokOutService.CreateStockOutIntoDb(req.body);
+  const { userId } = req.user;
+  console.log(userId);
+  const result = await StcokOutService.CreateStockOutIntoDb(req.body, userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Product deleted successfully',
+    message: 'Create outStock successfully',
     data: result,
   });
 });
 
 const getAllstockOut = catchAsync(async (req: Request, res: Response) => {
-  const result = await StcokOutService.getAllStcokOutFromDb();
+  const result = await StcokOutService.getAllStcokOutFromDb({
+    query: req.query,
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -26,7 +28,7 @@ const getAllstockOut = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getLast30DaysSales = catchAsync(async (req: Request, res: Response) => {
-  const result = await StcokOutService.getLast30DaysSalesFromDb();
+  const result = await StcokOutService.getLast30DaysSalesFromDb(req);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -49,10 +51,22 @@ const deletedSingleStockOut = catchAsync(
     });
   },
 );
+const getSingleStockOut = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await StcokOutService.getSingleStockOutIntoDb(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'OutStock revertive successfully',
+    data: result,
+  });
+});
 
 export const stcokOutController = {
   createstockOut,
   getAllstockOut,
   deletedSingleStockOut,
   getLast30DaysSales,
+  getSingleStockOut,
 };

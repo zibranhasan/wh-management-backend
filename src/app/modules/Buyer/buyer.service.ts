@@ -1,3 +1,4 @@
+import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { StockOut } from '../stcokOut/stockOut.model';
 import { TBuyer } from './buyer.interface';
@@ -16,9 +17,31 @@ const createBuyerIntoDb = async (payload: TBuyer) => {
   return result;
 };
 
-const getAllBuyersFromDb = async () => {
-  const result = await Buyer.find({ isDeleted: false }).sort({ createdAt: -1 });
-  return result;
+const getAllBuyersFromDb = async ({
+  query,
+}: {
+  query: Record<string, unknown>;
+}) => {
+  const BuyerSearchableFileds = ['name', 'phone', 'adress'];
+
+  const BuyerQuery = new QueryBuilder(
+    Buyer.find({ isDeleted: false }),
+
+    query,
+  )
+    .search(BuyerSearchableFileds)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const meta = await BuyerQuery.countTotal();
+  const result = await BuyerQuery.modelQuery;
+
+  return {
+    meta,
+    result,
+  };
 };
 const getSingleBugerFromDb = async (payload: string) => {
   const result = await Buyer.findById({ _id: payload }).sort({ createdAt: -1 });
@@ -51,9 +74,11 @@ const updateBuyerDueAmountFromDb = async (
     const { paidAmount } = payload;
     console.log(payload);
 
-    const buyer = await Buyer.findOne({ _id: id, isDeleted: false }).session(
+    const buyer = await Buyer.findById({ _id: id, isDeleted: false }).session(
       session,
     );
+
+    console.log(buyer);
     if (!buyer) {
       throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
     }
@@ -67,8 +92,13 @@ const updateBuyerDueAmountFromDb = async (
 
     // Update buyer's due amount
     buyer.totalDue = Math.max(0, (buyer.totalDue ?? 0) - paidAmount);
-    await buyer.save({ session });
+    buyer.totalPay = Math.max(0, (buyer.totalPay ?? 0) + paidAmount);
+    buyer.paymentHistory.push({
+      amount: paidAmount,
+      date: new Date(),
+    });
 
+    await buyer.save({ session });
     // Find and update related stock out records
     const stockOutRecords = await StockOut.find({
       buyerName: id,

@@ -30,6 +30,13 @@ const getAllInStockFromDb = async () => {
 
   return result;
 };
+const getStcokAlertFromDb = async () => {
+  const result = await StockIn.find({
+    $and: [{ quantity: { $lt: 70 } }, { isDeleted: { $eq: false } }],
+  });
+
+  return result;
+};
 const getDashboardStatsIntoDb = async () => {
   const totalSalesResult = await StockOut.aggregate([
     { $match: { isDeleted: false } },
@@ -173,4 +180,5 @@ export const inStockService = {
   updateProductInStockIntoDb,
   deleteStockInIntoDb,
   getDashboardStatsIntoDb,
+  getStcokAlertFromDb,
 };

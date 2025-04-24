@@ -15,6 +15,8 @@ export interface IUser {
   isDeleted: boolean;
 }
 
+
+
 export type TLoginUser = {
   email: string;
   password: string;

@@ -92,6 +92,15 @@ const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getStcokAlert = catchAsync(async (req: Request, res: Response) => {
+  const result = await inStockService.getStcokAlertFromDb();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Stcok Alert get successfully',
+    data: result,
+  });
+});
 
 export const inStockController = {
   createInStock,
@@ -101,4 +110,5 @@ export const inStockController = {
   deleteStockFromStockIn,
   updateProductInStock,
   getDashboardStats,
+  getStcokAlert,
 };

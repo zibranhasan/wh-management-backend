@@ -17,7 +17,7 @@ const createBuyer = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllBuyers = catchAsync(async (req: Request, res: Response) => {
-  const result = await buyerService.getAllBuyersFromDb();
+  const result = await buyerService.getAllBuyersFromDb({ query: req.query });
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
