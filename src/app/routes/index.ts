@@ -7,6 +7,7 @@ import { BuyerRoutes } from '../modules/Buyer/buyer.routes';
 import { stcokOutRoutes } from '../modules/stcokOut/stockOut..route';
 import { prodcutRoute } from '../modules/product/product.route';
 import { splierRoute } from '../modules/splier/splier.route';
+import { expensRoute } from '../modules/expense/expense.route';
 
 const router = Router();
 
@@ -38,6 +39,10 @@ const moduleRoutes = [
   {
     path: '/splier',
     route: splierRoute,
+  },
+  {
+    path: '/expense',
+    route: expensRoute,
   },
 ];
 

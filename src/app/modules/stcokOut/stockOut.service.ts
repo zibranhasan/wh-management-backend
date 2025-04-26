@@ -7,6 +7,7 @@ import httpStatus from 'http-status';
 import { Buyer } from '../Buyer/buyer.model';
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { User } from '../User/user.model';
 
 /**
  * The function `CreateStockOutIntoDb` handles the process of updating stock quantities, creating stock
@@ -107,6 +108,20 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
 
     if (!buyerUpdate) {
       throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
+    }
+    const updateSalseman = await User.findByIdAndUpdate(
+      userId,
+      {
+        $inc: {
+          totalSale: totalAmount,
+          totalSalesDue: dueAmount,
+        },
+      },
+      { session, new: true },
+    );
+
+    if (!updateSalseman) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Salsman not found');
     }
 
     await session.commitTransaction();
@@ -406,6 +421,15 @@ const getSingleStockOutIntoDb = async (id: string) => {
   }
   return result;
 };
+const getSingleStockOutBySellsmanIntodb = async (id: string) => {
+  const result = await StockOut.find({ salesman: id, isDeleted: false })
+    .populate('buyerName')
+    .populate('salesman');
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No OutStock found');
+  }
+  return result;
+};
 
 export const StcokOutService = {
   CreateStockOutIntoDb,
@@ -413,4 +437,5 @@ export const StcokOutService = {
   deletedSingleStcokOutFromDb,
   getLast30DaysSalesFromDb,
   getSingleStockOutIntoDb,
+  getSingleStockOutBySellsmanIntodb,
 };

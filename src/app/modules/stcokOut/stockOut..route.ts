@@ -12,6 +12,7 @@ router.post(
 router.get('/getLast30DaysSalesFromDb', stcokOutController.getLast30DaysSales);
 router.delete('/:id', stcokOutController.deletedSingleStockOut);
 router.get('/:id', stcokOutController.getSingleStockOut);
+router.get('/bySellsman/:id', stcokOutController.getSingleStockOutBySellsman);
 
 router.get('/', stcokOutController.getAllstockOut);
 

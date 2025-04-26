@@ -23,6 +23,26 @@ const getAllInStock = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getInternationalInStock = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await inStockService.getInternationalInStockIntodb();
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Stcok Get successfully',
+      data: result,
+    });
+  },
+);
+const getlocalInStock = catchAsync(async (req: Request, res: Response) => {
+  const result = await inStockService.getlocalInStockIntoDb();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Stcok Get successfully',
+    data: result,
+  });
+});
 
 const updateInStock = catchAsync(async (req: Request, res: Response) => {
   const { stockInId } = req.params;
@@ -111,4 +131,6 @@ export const inStockController = {
   updateProductInStock,
   getDashboardStats,
   getStcokAlert,
+  getInternationalInStock,
+  getlocalInStock,
 };

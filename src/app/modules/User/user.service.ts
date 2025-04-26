@@ -29,22 +29,16 @@ const createSingupIntoDb = async (file: any, payload: IUser) => {
   return result;
 };
 
-const singleUserDelete = async (payload: string) => {
-  const isUser = await User.findById(payload);
-
-  if (!isUser) {
-    throw new Error('This user is not found');
-  }
-  const isDeleted = isUser?.isDeleted;
-  if (isDeleted) {
-    throw new Error('This user is already deleted');
-  }
+const singleUserDeleteIntoDb = async (payload: string) => {
+  // console.log(payload);
 
   const result = await User.findByIdAndUpdate(
-    { _id: payload },
+    payload,
     { isDeleted: true },
     { new: true },
   );
+
+  console.log(result);
   return result;
 };
 
@@ -84,7 +78,7 @@ const updateUserInIntoDb = async (stockInId: string, updateData: any) => {
 
 export const userService = {
   createSingupIntoDb,
-  singleUserDelete,
+  singleUserDeleteIntoDb,
   getAlllUserIntoDb,
   updateUserInIntoDb,
   getsingleUserIntoDb,

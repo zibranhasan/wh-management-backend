@@ -20,8 +20,8 @@ const Createsignup = catchAsync(async (req: Request, res: Response) => {
 
 const singleUserDelete = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-
-  const result = await userService.singleUserDelete(id);
+  // console.log(id);
+  const result = await userService.singleUserDeleteIntoDb(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

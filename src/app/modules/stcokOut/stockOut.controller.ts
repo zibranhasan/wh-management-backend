@@ -62,6 +62,19 @@ const getSingleStockOut = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getSingleStockOutBySellsman = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await StcokOutService.getSingleStockOutBySellsmanIntodb(id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'OutStock revertive successfully',
+      data: result,
+    });
+  },
+);
 
 export const stcokOutController = {
   createstockOut,
@@ -69,4 +82,5 @@ export const stcokOutController = {
   deletedSingleStockOut,
   getLast30DaysSales,
   getSingleStockOut,
+  getSingleStockOutBySellsman,
 };

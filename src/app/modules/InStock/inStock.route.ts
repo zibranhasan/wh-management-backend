@@ -31,6 +31,8 @@ router.delete(
 );
 
 router.get('/getAllInStcok', inStockController.getAllInStock);
+router.get('/international', inStockController.getInternationalInStock);
+router.get('/local', inStockController.getlocalInStock);
 
 router.get('/dashboard', inStockController.getDashboardStats);
 router.get('/getStcokAlert', inStockController.getStcokAlert);

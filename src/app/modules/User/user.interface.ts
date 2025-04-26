@@ -10,12 +10,12 @@ export interface IUser {
   phone: string;
   image: string;
   address: string;
+  totalSalesDue: number;
+  totalSale: number;
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;
 }
-
-
 
 export type TLoginUser = {
   email: string;

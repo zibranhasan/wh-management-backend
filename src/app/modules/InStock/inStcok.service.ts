@@ -30,6 +30,26 @@ const getAllInStockFromDb = async () => {
 
   return result;
 };
+const getInternationalInStockIntodb = async () => {
+  const result = await StockIn.find({
+    isDeleted: false,
+    productType: 'international',
+  }).sort({
+    createdAt: -1,
+  });
+
+  return result;
+};
+const getlocalInStockIntoDb = async () => {
+  const result = await StockIn.find({
+    isDeleted: false,
+    productType: 'local',
+  }).sort({
+    createdAt: -1,
+  });
+
+  return result;
+};
 const getStcokAlertFromDb = async () => {
   const result = await StockIn.find({
     $and: [{ quantity: { $lt: 70 } }, { isDeleted: { $eq: false } }],
@@ -181,4 +201,6 @@ export const inStockService = {
   deleteStockInIntoDb,
   getDashboardStatsIntoDb,
   getStcokAlertFromDb,
+  getInternationalInStockIntodb,
+  getlocalInStockIntoDb,
 };
