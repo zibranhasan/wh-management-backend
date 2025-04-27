@@ -5,7 +5,10 @@ export type TBuyer = {
   products: [];
   totalPurchase?: number;
   totalDue?: number;
-  paymentHistory?: [];
+  paymentHistory?: {
+    amount: number;
+    date: Date;
+  }[];
   date?: Date;
   totalPay?: number;
   isDeleted?: boolean;

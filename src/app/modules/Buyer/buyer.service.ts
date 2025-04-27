@@ -83,6 +83,11 @@ const updateBuyerDueAmountFromDb = async (
       throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
     }
 
+    // Ensure paymentHistory is initialized
+    if (!buyer.paymentHistory) {
+      buyer.paymentHistory = [];
+    }
+
     if (paidAmount > (buyer.totalDue ?? 0)) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
@@ -93,6 +98,7 @@ const updateBuyerDueAmountFromDb = async (
     // Update buyer's due amount
     buyer.totalDue = Math.max(0, (buyer.totalDue ?? 0) - paidAmount);
     buyer.totalPay = Math.max(0, (buyer.totalPay ?? 0) + paidAmount);
+
     buyer.paymentHistory.push({
       amount: paidAmount,
       date: new Date(),

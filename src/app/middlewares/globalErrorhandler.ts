@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ErrorRequestHandler } from 'express';
 import { ZodError } from 'zod';
@@ -10,9 +11,9 @@ import handleValidationError from '../errors/handleValidationError';
 import handleZodError from '../errors/handleZodError';
 import { TErrorSources } from '../interface/error.interface';
 
-const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+const globalErrorhandler = (err: any, req: any, res: any, next: any) => {
   console.log(err.statusCode);
-  //setting default values
+
   let statusCode = 500;
   let message = 'Something went wrong!';
   let errorSources: TErrorSources = [
@@ -71,4 +72,4 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   });
 };
 
-export default globalErrorHandler;
+export default globalErrorhandler;

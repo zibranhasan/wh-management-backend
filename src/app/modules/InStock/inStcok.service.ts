@@ -4,6 +4,7 @@ import { Product } from '../product/product.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { StockOut } from '../stcokOut/stockOut.model';
+import { Expense } from '../expense/expense.model';
 
 const CreateInStockIntoDb = async (data: TStockIn) => {
   // Find the product by ID
@@ -93,6 +94,21 @@ const getDashboardStatsIntoDb = async () => {
     },
   ]);
 
+  const totalExpense = await Expense.aggregate([
+    { $match: { isDeleted: false } },
+    {
+      $group: {
+        _id: null,
+        totalExpenses: { $sum: '$amount' },
+      },
+    },
+  ]);
+
+  const totalExpenseValue =
+    totalExpense.length > 0 ? totalExpense[0].totalExpenses : 0;
+
+  console.log(totalExpenseValue);
+
   // console.log(totalSalesResult);
   const totalValueNet =
     totalValueResult.length > 0 ? totalValueResult[0].totalValue : 0;
@@ -106,6 +122,7 @@ const getDashboardStatsIntoDb = async () => {
     TotalSales: totalSales,
     TotalDue: TotalDues,
     TotalNet: totalValueNet,
+    totalExpenseValue: totalExpenseValue,
   };
 };
 
