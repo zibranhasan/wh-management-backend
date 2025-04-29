@@ -1,6 +1,7 @@
 import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { StockOut } from '../stcokOut/stockOut.model';
+import { User } from '../User/user.model';
 import { TBuyer } from './buyer.interface';
 import { Buyer } from './buyer.model';
 import httpStatus from 'http-status';
@@ -113,6 +114,31 @@ const updateBuyerDueAmountFromDb = async (
     })
       .sort({ createdAt: 1 })
       .session(session);
+
+    console.log(stockOutRecords);
+
+    const salesmanId =
+      stockOutRecords.length > 0 ? stockOutRecords[0].salesman : null;
+    // const salesman = salesmanId
+    //   ? await User.findById(salesmanId).session(session)
+    //   : null;
+    // if (salesman) {
+    //   salesman.totalSalesDue = Math.max(
+    //     0,
+    //     (salesman.totalSalesDue ?? 0) - paidAmount,
+    //   );
+    //   await salesman.save({ session });
+    // }
+
+    if (salesmanId) {
+      await User.findByIdAndUpdate(
+        salesmanId,
+        {
+          $inc: { totalSalesDue: -paidAmount }, // Decrease totalSalesDue by paidAmount
+        },
+        { session, new: true }, // Use the session and return the updated document
+      );
+    }
 
     let remainingPayment = paidAmount;
 

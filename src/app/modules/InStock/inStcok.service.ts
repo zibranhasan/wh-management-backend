@@ -25,9 +25,11 @@ const CreateInStockIntoDb = async (data: TStockIn) => {
 };
 
 const getAllInStockFromDb = async () => {
-  const result = await StockIn.find({ isDeleted: false }).sort({
-    createdAt: -1,
-  });
+  const result = await StockIn.find({ isDeleted: false })
+    .sort({
+      createdAt: -1,
+    })
+    .populate('supplierName');
 
   return result;
 };

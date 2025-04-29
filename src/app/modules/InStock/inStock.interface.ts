@@ -2,7 +2,8 @@ import { ObjectId } from 'mongoose';
 
 export type TProduct = {
   name: string;
-  unit: string;
+  // unit: string;
+  description: string;
   isDeleted?: boolean;
   date?: Date;
 };
@@ -16,7 +17,7 @@ export type TStockIn = {
   vehicleNumber: string;
   productType: 'international' | 'local';
 
-  supplierName: string;
+  supplierName: ObjectId;
   date?: Date;
   unit: 'kg' | 'pcs' | 'liter' | 'box';
   isDeleted?: boolean;

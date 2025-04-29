@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { TStockIn } from './inStock.interface';
+import { Splier } from '../splier/spiler.model';
 
 const stockInSchema = new Schema<TStockIn>(
   {
@@ -27,10 +28,14 @@ const stockInSchema = new Schema<TStockIn>(
       required: true,
       enum: {
         values: ['international', 'local'],
-        message: '',
+        message: 'local or international',
       },
     },
-    supplierName: { type: String, required: true },
+    supplierName: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: Splier,
+    },
     date: { type: Date, default: Date.now },
     isDeleted: { type: Boolean, default: false },
   },

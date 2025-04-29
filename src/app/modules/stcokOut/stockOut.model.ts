@@ -15,6 +15,7 @@ const stockOutSchema = new Schema<ToutStock>({
   quantity: { type: Number, required: true },
   buyerName: { type: Schema.Types.ObjectId, ref: 'Buyer', required: true },
   buyerPhone: { type: String, required: true },
+  sellingPrice: { type: Number, required: true },
   salesman: {
     type: Schema.Types.ObjectId,
     ref: 'User',

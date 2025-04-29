@@ -10,6 +10,7 @@ export type ToutStock = {
   quantity: number;
   buyerName: ObjectId;
   salesman: ObjectId;
+  sellingPrice: number;
   dueAmount?: number;
   isDeleted?: boolean;
 };
