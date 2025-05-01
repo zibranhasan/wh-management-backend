@@ -75,6 +75,16 @@ const getSingleStockOutBySellsman = catchAsync(
     });
   },
 );
+const getAllProfits = catchAsync(async (req: Request, res: Response) => {
+  const result = await StcokOutService.getAllProfitsGroupedByInvoice();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'OutStock revertive successfully',
+    data: result,
+  });
+});
 
 export const stcokOutController = {
   createstockOut,
@@ -83,4 +93,5 @@ export const stcokOutController = {
   getLast30DaysSales,
   getSingleStockOut,
   getSingleStockOutBySellsman,
+  getAllProfits,
 };

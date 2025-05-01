@@ -36,7 +36,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
       throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
     }
 
-    console.log(product);
+    console.log(Product);
 
     if (!Product || Product.quantity < quantity) {
       throw new AppError(
@@ -49,6 +49,15 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
     if (!isBuyer) {
       throw new AppError(httpStatus.NOT_FOUND, 'Buyer Not Founded');
     }
+
+    const LoggeUser = await User.findById({ _id: userId });
+    console.log(LoggeUser);
+
+    if (!LoggeUser) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
+    }
+
+    const SalesManName = LoggeUser?.name;
 
     // const productPrice = Product?.price;
 
@@ -82,17 +91,19 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
           paidAmount,
           totalAmount,
           productName: Product?.name,
+          invoiceNumber: Product?.invoiceNumber,
           quantity,
           sellingPrice,
           buyerName: isBuyer._id,
           buyerPhone: isBuyer.phone,
+
           salesman: userId,
           dueAmount,
         },
       ],
       { session },
     );
-
+    console.log(outStockRecord);
     const buyerUpdate = await Buyer.findByIdAndUpdate(
       isBuyer._id,
       {
@@ -111,6 +122,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
           paymentHistory: {
             amount: paidAmount,
             date: new Date(),
+            reviceBy: SalesManName,
           },
         },
       },
@@ -296,7 +308,72 @@ const getSingleStockOutBySellsmanIntodb = async (id: string) => {
   return result;
 };
 
+const getAllProfitsGroupedByInvoice = async () => {
+  const result = await StockOut.aggregate([
+    {
+      $match: {
+        isDeleted: false, // Only include non-deleted records
+      },
+    },
+    {
+      $lookup: {
+        from: 'stockins', // Join with the StockIn collection
+        localField: 'product',
+        foreignField: '_id',
+        as: 'productDetails',
+      },
+    },
+    {
+      $unwind: '$productDetails', // Unwind the product details array
+    },
+    {
+      $group: {
+        _id: '$invoiceNumber',
+
+        products: {
+          $push: {
+            productName: '$productName',
+            quantity: '$quantity',
+            sellingPrice: '$sellingPrice',
+            buyingPrice: '$productDetails.price',
+            profit: {
+              $multiply: [
+                { $subtract: ['$sellingPrice', '$productDetails.price'] },
+                '$quantity',
+              ],
+            },
+          },
+        },
+
+        totalProfit: {
+          $sum: {
+            $multiply: [
+              { $subtract: ['$sellingPrice', '$productDetails.price'] },
+              '$quantity',
+            ],
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        productName: '$productName',
+        invoiceNumber: '$_id',
+        products: 1,
+        totalProfit: 1,
+      },
+    },
+    {
+      $sort: { invoiceNumber: 1 }, // Sort by invoice number
+    },
+  ]);
+
+  return result;
+};
+
 export const StcokOutService = {
+  getAllProfitsGroupedByInvoice,
   CreateStockOutIntoDb,
   getAllStcokOutFromDb,
   deletedSingleStcokOutFromDb,

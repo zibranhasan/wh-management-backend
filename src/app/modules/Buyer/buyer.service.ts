@@ -67,19 +67,28 @@ const deleteBuyerFromDb = async (payload: string) => {
 const updateBuyerDueAmountFromDb = async (
   id: string,
   payload: { paidAmount: number },
+  userId: string,
 ) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
     const { paidAmount } = payload;
-    console.log(payload);
+
+    const LoggeUser = await User.findById({ _id: userId });
+    console.log(LoggeUser);
+
+    if (!LoggeUser) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
+    }
+
+    const SalesManName = LoggeUser?.name;
 
     const buyer = await Buyer.findById({ _id: id, isDeleted: false }).session(
       session,
     );
 
-    console.log(buyer);
+    // console.log(buyer);
     if (!buyer) {
       throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
     }
@@ -97,15 +106,35 @@ const updateBuyerDueAmountFromDb = async (
     }
 
     // Update buyer's due amount
-    buyer.totalDue = Math.max(0, (buyer.totalDue ?? 0) - paidAmount);
-    buyer.totalPay = Math.max(0, (buyer.totalPay ?? 0) + paidAmount);
+    // buyer.totalDue = Math.max(0, (buyer.totalDue ?? 0) - paidAmount);
+    // buyer.totalPay = Math.max(0, (buyer.totalPay ?? 0) + paidAmount);
 
-    buyer.paymentHistory.push({
-      amount: paidAmount,
-      date: new Date(),
-    });
+    // buyer.paymentHistory.push({
+    //   amount: paidAmount,
+    //   reviceBy: SalesManName,
+    //   date: new Date(),
+    // });
 
-    await buyer.save({ session });
+    // await buyer.save({ session });
+
+    await Buyer.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          totalDue: Math.max(0, (buyer.totalDue ?? 0) - paidAmount),
+          totalPay: Math.max(0, (buyer.totalPay ?? 0) + paidAmount),
+        },
+        $push: {
+          paymentHistory: {
+            amount: paidAmount,
+            reviceBy: SalesManName,
+            date: new Date(),
+          },
+        },
+      },
+      { session, new: true, runValidators: true },
+    );
+
     // Find and update related stock out records
     const stockOutRecords = await StockOut.find({
       buyerName: id,
@@ -115,7 +144,7 @@ const updateBuyerDueAmountFromDb = async (
       .sort({ createdAt: 1 })
       .session(session);
 
-    console.log(stockOutRecords);
+    // console.log(stockOutRecords);
 
     const salesmanId =
       stockOutRecords.length > 0 ? stockOutRecords[0].salesman : null;

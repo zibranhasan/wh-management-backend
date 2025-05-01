@@ -12,8 +12,7 @@ const getAllExpenseFromDb = async () => {
   return result;
 };
 const DeleteExpenseFromDb = async (id: string) => {
-  const result = await Expense.findByIdAndUpdate({
-    _id: id,
+  const result = await Expense.findByIdAndUpdate(id, {
     isDeleted: true,
     new: true,
   });

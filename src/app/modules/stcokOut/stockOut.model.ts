@@ -11,11 +11,12 @@ const stockOutSchema = new Schema<ToutStock>({
     ref: 'StockIn',
     required: true,
   },
+  invoiceNumber: { type: String, required: true },
   productName: { type: String, requied: true },
   quantity: { type: Number, required: true },
   buyerName: { type: Schema.Types.ObjectId, ref: 'Buyer', required: true },
   buyerPhone: { type: String, required: true },
-  sellingPrice: { type: Number, required: true },
+  sellingPrice: { type: Number, default: 0 },
   salesman: {
     type: Schema.Types.ObjectId,
     ref: 'User',

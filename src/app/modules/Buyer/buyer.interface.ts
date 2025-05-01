@@ -8,6 +8,7 @@ export type TBuyer = {
   paymentHistory?: {
     amount: number;
     date: Date;
+    reviceBy: string;
   }[];
   date?: Date;
   totalPay?: number;

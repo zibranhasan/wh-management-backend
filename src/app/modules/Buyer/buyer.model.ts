@@ -24,6 +24,7 @@ const buyerSchema = new Schema<TBuyer>({
     {
       amount: { type: Number, required: true, default: 0 },
       date: { type: Date, default: Date.now },
+      reviceBy: { type: String, required: true },
     },
   ],
 

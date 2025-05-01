@@ -50,9 +50,15 @@ const deleteBuyer = catchAsync(async (req: Request, res: Response) => {
 
 const updateBuyerDueAmount = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log(req.body);
 
-  const result = await buyerService.updateBuyerDueAmountFromDb(id, req.body);
+  const { userId } = req.user;
+  console.log(userId);
+
+  const result = await buyerService.updateBuyerDueAmountFromDb(
+    id,
+    req.body,
+    userId,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

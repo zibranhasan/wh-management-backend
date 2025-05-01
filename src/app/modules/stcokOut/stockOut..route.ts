@@ -10,6 +10,7 @@ router.post(
   stcokOutController.createstockOut,
 );
 router.get('/getLast30DaysSalesFromDb', stcokOutController.getLast30DaysSales);
+router.get('/getAllprofit', stcokOutController.getAllProfits);
 router.delete('/:id', stcokOutController.deletedSingleStockOut);
 router.get('/:id', stcokOutController.getSingleStockOut);
 router.get('/bySellsman/:id', stcokOutController.getSingleStockOutBySellsman);

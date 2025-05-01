@@ -19,18 +19,19 @@ const getAllExpense = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Stcok Get successfully',
+    message: 'Expense Get successfully',
     data: result,
   });
 });
 
 const deletedExpense = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
+  console.log(id);
   const result = await expenseService.DeleteExpenseFromDb(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Stcok Get successfully',
+    message: 'Expense Deleted successfully',
     data: result,
   });
 });
