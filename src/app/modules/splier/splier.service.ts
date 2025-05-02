@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import QueryBuilder from '../../builder/QueryBuilder';
 import { Splier } from './spiler.model';
 
 const createSplierIntoDb = async (payload: any) => {
@@ -12,22 +13,24 @@ const getAllSplierIntoDb = async ({
   query: Record<string, unknown>;
 }) => {
   const splierSearchableFileds = ['name', 'phone', 'adress'];
-  let searchTerm = '';
+  const SupplierQuery = new QueryBuilder(
+    Splier.find({ isDeleted: false }),
 
-  if (query?.searchTerm) {
-    searchTerm = query.searchTerm as string;
-  }
+    query,
+  )
+    .search(splierSearchableFileds)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  const result = await Splier.find(
-    {
-      $or: splierSearchableFileds.map((field) => ({
-        [field]: { $regex: searchTerm, $options: 'i' },
-      })),
-    },
-    { isDeleted: false },
-  );
+  const meta = await SupplierQuery.countTotal();
+  const result = await SupplierQuery.modelQuery;
 
-  return result;
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingelSplierIntoDb = async (id: string) => {

@@ -5,10 +5,10 @@ import { userService } from './user.service';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 const Createsignup = catchAsync(async (req: Request, res: Response) => {
-  console.log(req.file, 'req.file');
+  // console.log(req.file, 'req.file');
   console.log(req.body, 'req.body');
 
-  const result = await userService.createSingupIntoDb(req.file, req.body);
+  const result = await userService.createSingupIntoDb(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { User } from './user.model';
 import { IUser } from './user.interface';
-import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
+// import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
-const createSingupIntoDb = async (file: any, payload: IUser) => {
+const createSingupIntoDb = async (payload: IUser) => {
   if (!payload) {
     throw new Error('Payload is required');
   }
@@ -15,14 +15,14 @@ const createSingupIntoDb = async (file: any, payload: IUser) => {
     throw new Error('This user is already exists');
   }
 
-  if (file) {
-    const imageName = `${payload?.name}`;
-    const path = file?.path;
+  // if (file) {
+  //   const imageName = `${payload?.name}`;
+  //   const path = file?.path;
 
-    //send image to cloudinary
-    const { secure_url } = await sendImageToCloudinary(imageName, path);
-    payload.image = secure_url as string;
-  }
+  //   //send image to cloudinary
+  //   const { secure_url } = await sendImageToCloudinary(imageName, path);
+  //   payload.image = secure_url as string;
+  // }
   payload.role = 'user';
   const result = await User.create(payload);
 

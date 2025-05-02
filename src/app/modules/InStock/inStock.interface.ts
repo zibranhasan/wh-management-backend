@@ -16,7 +16,6 @@ export type TStockIn = {
   invoiceNumber: string;
   vehicleNumber: string;
   productType: 'international' | 'local';
-
   supplierName: ObjectId;
   date?: Date;
   unit: 'kg' | 'pcs' | 'liter' | 'box';

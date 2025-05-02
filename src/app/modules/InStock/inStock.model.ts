@@ -21,7 +21,7 @@ const stockInSchema = new Schema<TStockIn>(
     },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
-    invoiceNumber: { type: String, required: true, unique: true },
+    invoiceNumber: { type: String, required: true },
     vehicleNumber: { type: String, required: true },
     productType: {
       type: String,
