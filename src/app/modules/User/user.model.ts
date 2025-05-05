@@ -13,6 +13,14 @@ const userSchema = new Schema<IUser, UserModel>(
     image: { type: String, default: '' },
     totalSale: { type: Number, default: 0 },
     totalSalesDue: { type: Number, default: 0 },
+    dueCollectionHistory: [
+      {
+        buyerName: { type: String, required: true },
+        date: { type: Date, required: true },
+        collectedAmount: { type: Number, required: true, default: 0 },
+      },
+    ],
+
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     isDeleted: { type: Boolean, default: false },

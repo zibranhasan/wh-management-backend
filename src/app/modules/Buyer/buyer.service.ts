@@ -169,6 +169,20 @@ const updateBuyerDueAmountFromDb = async (
       );
     }
 
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: {
+          dueCollectionHistory: {
+            buyerName: buyer.name,
+            date: new Date(),
+            collectedAmount: paidAmount,
+          },
+        },
+      },
+      { session, new: true },
+    );
+
     let remainingPayment = paidAmount;
 
     for (const record of stockOutRecords) {

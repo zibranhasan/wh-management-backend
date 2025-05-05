@@ -12,6 +12,11 @@ export interface IUser {
   address: string;
   totalSalesDue: number;
   totalSale: number;
+  dueCollectionHistory?: {
+    buyerName: string;
+    date: Date;
+    collectedAmount: number;
+  }[];
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean;

@@ -20,7 +20,7 @@ const productSchema = new Schema<TProduct>({
 
   description: {
     type: String,
-    required: true,
+ 
     minLength: [5, 'description must be 5 charactes'],
   },
 
