@@ -4,7 +4,7 @@ import { Product } from './product.model';
 
 import httpStatus from 'http-status';
 const createProductIntoDb = async (payload: any) => {
-  console.log(payload);
+  // console.log(payload);
 
   const isExistProcut = await Product.findOne(payload);
   if (isExistProcut) {

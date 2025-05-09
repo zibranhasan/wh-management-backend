@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 
-import sendResponse from '../../utils/sendResponse';
-import { userService } from './user.service';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendResponse';
+import { userService } from './user.service';
 const Createsignup = catchAsync(async (req: Request, res: Response) => {
   // console.log(req.file, 'req.file');
-  console.log(req.body, 'req.body');
+  // console.log(req.body, 'req.body');
 
   const result = await userService.createSingupIntoDb(req.body);
 

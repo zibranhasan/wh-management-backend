@@ -22,6 +22,7 @@ const stockOutSchema = new Schema<ToutStock>({
     ref: 'User',
     required: true,
   },
+  discount: { type: Number, default: 0 },
   totalAmount: { type: Number, default: 0 },
   paidAmount: { type: Number, default: 0 },
   dueAmount: { type: Number, default: 0 },

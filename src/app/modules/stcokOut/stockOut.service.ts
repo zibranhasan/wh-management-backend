@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ToutStock } from './stockOut.interface';
-import { StockIn } from '../InStock/inStock.model';
-import { StockOut } from './stockOut.model';
-import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
-import { Buyer } from '../Buyer/buyer.model';
 import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
+import AppError from '../../errors/AppError';
+import { Buyer } from '../Buyer/buyer.model';
+import { StockIn } from '../InStock/inStock.model';
 import { User } from '../User/user.model';
+import { ToutStock } from './stockOut.interface';
+import { StockOut } from './stockOut.model';
 
 /**
  * The function `CreateStockOutIntoDb` handles the process of updating stock quantities, creating stock
@@ -29,6 +29,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
       quantity,
       buyerPhone,
       sellingPrice,
+      discount = 0,
     } = payload;
     // console.log(name, 'dd');
     const Product = await StockIn.findOne({ _id: product });
@@ -36,7 +37,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
       throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
     }
 
-    console.log(Product);
+    // console.log(Product);
 
     if (!Product || Product.quantity < quantity) {
       throw new AppError(
@@ -51,7 +52,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
     }
 
     const LoggeUser = await User.findById({ _id: userId });
-    console.log(LoggeUser);
+    // console.log(LoggeUser);
 
     if (!LoggeUser) {
       throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
@@ -61,11 +62,26 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
 
     // const productPrice = Product?.price;
 
-    const totalAmount = sellingPrice * quantity;
-    const dueAmount = totalAmount - paidAmount;
+    let totalAmount = sellingPrice * quantity;
+    let dueAmount = totalAmount - paidAmount;
 
     if (totalAmount < paidAmount) {
       throw new AppError(httpStatus.BAD_REQUEST, 'You paid under total amount');
+    }
+
+    if (discount > 0) {
+      // const discountAmount = (totalAmount * discount) / 100;
+      // const totalAmountAfterDiscount = totalAmount - discountAmount;
+      // const dueAmountAfterDiscount = totalAmountAfterDiscount - paidAmount;
+
+      // if (totalAmountAfterDiscount < paidAmount) {
+      //   throw new AppError(
+      //     httpStatus.BAD_REQUEST,
+      //     'You paid under total amount after discount',
+      //   );
+      // }
+      totalAmount = totalAmount - discount;
+      dueAmount = totalAmount - paidAmount;
     }
 
     const result = await StockIn.updateOne(
@@ -75,7 +91,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
       },
       { session, new: true },
     );
-    console.log(result);
+    // console.log(result);
 
     if (result.modifiedCount === 0) {
       throw new AppError(
@@ -96,7 +112,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
           sellingPrice,
           buyerName: isBuyer._id,
           buyerPhone: isBuyer.phone,
-
+          discount,
           salesman: userId,
           dueAmount,
         },
@@ -199,9 +215,9 @@ const getLast30DaysSalesFromDb = async (req: any) => {
   const endDate = new Date();
   endDate.setHours(23, 59, 59, 999); // End of today
 
-  console.log(
-    `Fetching sales data from ${startDate.toISOString()} to ${endDate.toISOString()}`,
-  );
+  // console.log(
+  //   `Fetching sales data from ${startDate.toISOString()} to ${endDate.toISOString()}`,
+  // );
 
   // Aggregate sales data for the specified period
   const dailySales = await StockOut.aggregate([

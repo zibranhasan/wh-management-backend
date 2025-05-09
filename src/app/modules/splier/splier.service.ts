@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import httpStatus from 'http-status';
+import { console } from 'inspector';
 import QueryBuilder from '../../builder/QueryBuilder';
+import AppError from '../../errors/AppError';
 import { Splier } from './spiler.model';
-
 const createSplierIntoDb = async (payload: any) => {
   const result = await Splier.create(payload);
 
@@ -39,11 +41,15 @@ const getSingelSplierIntoDb = async (id: string) => {
   return result;
 };
 const deleteSingelSplier = async (id: string) => {
+  console.log(id);
   const result = await Splier.findByIdAndUpdate(
     id,
     { isDeleted: true },
     { new: true },
   );
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No supplier found');
+  }
 
   return result;
 };

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import config from '../../config';
-import AppError from '../../errors/AppError';
-import { TLoginUser } from '../User/user.interface';
-import { User } from '../User/user.model';
 import httpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
+import config from '../../config';
+import AppError from '../../errors/AppError';
 import { sendEmail } from '../../utils/sendEmail';
+import { TLoginUser } from '../User/user.interface';
+import { User } from '../User/user.model';
 
 const loginUser = async (payload: TLoginUser) => {
   const user = await User.isUserExistsByEmail(payload.email);
@@ -48,7 +48,7 @@ const loginUser = async (payload: TLoginUser) => {
 const getMe = async (userId: string) => {
   // console.log(userId, 'bal');
   const result = await User.findById(userId);
-  console.log(result);
+  // console.log(result);
   return result;
 };
 

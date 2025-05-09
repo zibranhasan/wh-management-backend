@@ -1,11 +1,11 @@
+import { Request, Response } from 'express';
+import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import httpStatus from 'http-status';
-import { Request, Response } from 'express';
 import { StcokOutService } from './stockOut.service';
 const createstockOut = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.user;
-  console.log(userId);
+  // console.log(userId);
   const result = await StcokOutService.CreateStockOutIntoDb(req.body, userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,

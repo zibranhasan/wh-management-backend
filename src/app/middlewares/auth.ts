@@ -2,17 +2,17 @@
 import httpStatus from 'http-status';
 import AppError from '../errors/AppError';
 
-import catchAsync from '../utils/catchAsync';
-import config from '../config';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import config from '../config';
 import { TUserRole } from '../modules/User/user.interface';
 import { User } from '../modules/User/user.model';
+import catchAsync from '../utils/catchAsync';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req?.headers?.authorization;
-    console.log(token, 'token');
+    // console.log(token, 'token');
     // checking if the token is missing
 
     if (!token) {
@@ -27,7 +27,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
     const { role, email, userId } = decoded;
 
-    console.log(decoded, 'deoccdee');
+    // console.log(decoded, 'deoccdee');
     // checking if the user is exist
     const user = await User.isUserExistsByEmail(email);
 

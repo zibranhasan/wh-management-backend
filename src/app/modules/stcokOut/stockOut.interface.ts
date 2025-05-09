@@ -9,6 +9,7 @@ export type ToutStock = {
   productName: string;
   quantity: number;
   buyerName: ObjectId;
+  discount?: number;
   salesman: ObjectId;
   sellingPrice: number;
   invoiceNumber: string;

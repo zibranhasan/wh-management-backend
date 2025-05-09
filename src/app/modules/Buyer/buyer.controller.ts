@@ -52,7 +52,7 @@ const updateBuyerDueAmount = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const { userId } = req.user;
-  console.log(userId);
+  // console.log(userId);
 
   const result = await buyerService.updateBuyerDueAmountFromDb(
     id,
