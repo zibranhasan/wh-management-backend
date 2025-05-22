@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
+import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import httpStatus from 'http-status';
 import { inStockService } from './inStcok.service';
 const createInStock = catchAsync(async (req: Request, res: Response) => {
   console.log(req.body, 'body');
@@ -103,6 +103,24 @@ const deleteStockFromStockIn = catchAsync(
     });
   },
 );
+const damageStockFromStockIn = catchAsync(
+  async (req: Request, res: Response) => {
+    const { stockInId } = req.params;
+
+    // console.log(stockInId);
+    const { damageQuantity } = req.body;
+    const result = await inStockService.AddDamageQuantityIntoDb(
+      stockInId,
+      damageQuantity,
+    );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Damage Update successfully',
+      data: result,
+    });
+  },
+);
 const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
   const result = await inStockService.getDashboardStatsIntoDb();
   sendResponse(res, {
@@ -133,4 +151,5 @@ export const inStockController = {
   getStcokAlert,
   getInternationalInStock,
   getlocalInStock,
+  damageStockFromStockIn,
 };

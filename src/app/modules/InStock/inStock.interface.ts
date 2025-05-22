@@ -15,7 +15,8 @@ export type TStockIn = {
   price: number;
   invoiceNumber: string;
   vehicleNumber: string;
-  productType: 'international' | 'local';
+  productType: 'dubai' | 'container';
+  damageQuantity?: number;
   supplierName: ObjectId;
   date?: Date;
   unit: 'kg' | 'pcs' | 'liter' | 'box';

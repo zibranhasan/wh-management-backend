@@ -1,20 +1,32 @@
+import httpStatus from 'http-status';
+import mongoose from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { StockOut } from '../stcokOut/stockOut.model';
 import { User } from '../User/user.model';
 import { TBuyer } from './buyer.interface';
 import { Buyer } from './buyer.model';
-import httpStatus from 'http-status';
-import mongoose from 'mongoose';
 
-const createBuyerIntoDb = async (payload: TBuyer) => {
+const createBuyerIntoDb = async (payload: TBuyer, userId: string) => {
   const { phone } = payload;
 
   const phoneNumber = await Buyer.findOne({ phone });
   if (phoneNumber) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Phone number already exists');
   }
-  const result = await Buyer.create(payload);
+
+  const LoggeUser = await User.findById({ _id: userId });
+  // console.log(LoggeUser);
+
+  if (!LoggeUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
+  }
+
+  const SalesManName = LoggeUser?.name;
+
+  const data = { createdBy: SalesManName, ...payload };
+
+  const result = await Buyer.create(data);
   return result;
 };
 
@@ -23,7 +35,7 @@ const getAllBuyersFromDb = async ({
 }: {
   query: Record<string, unknown>;
 }) => {
-  const BuyerSearchableFileds = ['name', 'phone', 'adress'];
+  const BuyerSearchableFileds = ['name', 'phone', 'adress', 'createdBy'];
 
   const BuyerQuery = new QueryBuilder(
     Buyer.find({ isDeleted: false }),
@@ -46,6 +58,15 @@ const getAllBuyersFromDb = async ({
 };
 const getSingleBugerFromDb = async (payload: string) => {
   const result = await Buyer.findById({ _id: payload }).sort({ createdAt: -1 });
+  return result;
+};
+const getBySalseManNameFromDb = async (payload: string) => {
+  const result = await Buyer.find({
+    createdBy: payload,
+    isDeleted: false,
+  }).sort({
+    createdAt: -1,
+  });
   return result;
 };
 
@@ -213,5 +234,6 @@ export const buyerService = {
   getAllBuyersFromDb,
   getSingleBugerFromDb,
   deleteBuyerFromDb,
+  getBySalseManNameFromDb,
   updateBuyerDueAmountFromDb,
 };

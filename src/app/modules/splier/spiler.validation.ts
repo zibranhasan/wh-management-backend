@@ -7,7 +7,7 @@ const createValidationSchema = z.object({
       .min(3, 'Name must be 3  characters.'),
     phone: z
       .string({ required_error: 'Phone is Required' })
-      .min(11, 'Phone must be Required'),
+      .min(11, 'Phone must be 11 characters.'),
     address: z.string({ required_error: 'Address is Required' }),
     companyName: z.string({ required_error: 'Company Name is Requied' }),
   }),

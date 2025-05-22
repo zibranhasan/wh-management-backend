@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
-import { TStockIn } from './inStock.interface';
 import { Splier } from '../splier/spiler.model';
+import { TStockIn } from './inStock.interface';
 
 const stockInSchema = new Schema<TStockIn>(
   {
@@ -21,14 +21,15 @@ const stockInSchema = new Schema<TStockIn>(
     },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
+    damageQuantity: { type: Number, default: 0 },
     invoiceNumber: { type: String, required: true },
     vehicleNumber: { type: String, required: true },
     productType: {
       type: String,
       required: true,
       enum: {
-        values: ['international', 'local'],
-        message: 'local or international',
+        values: ['dubai', 'container'],
+        message: 'dubai or container',
       },
     },
     supplierName: {

@@ -6,7 +6,9 @@ import httpStatus from 'http-status';
 import { buyerService } from './buyer.service';
 
 const createBuyer = catchAsync(async (req: Request, res: Response) => {
-  const result = await buyerService.createBuyerIntoDb(req.body);
+  const { userId } = req.user;
+
+  const result = await buyerService.createBuyerIntoDb(req.body, userId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -29,6 +31,18 @@ const getAllBuyers = catchAsync(async (req: Request, res: Response) => {
 const getSingleBuyer = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await buyerService.getSingleBugerFromDb(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Buyer retrieved successfully',
+    data: result,
+  });
+});
+
+const getBySalseManName = catchAsync(async (req: Request, res: Response) => {
+  const { name } = req.params;
+  console.log(name);
+  const result = await buyerService.getBySalseManNameFromDb(name);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -73,5 +87,6 @@ export const buyerController = {
   getAllBuyers,
   getSingleBuyer,
   deleteBuyer,
+  getBySalseManName,
   updateBuyerDueAmount,
 };

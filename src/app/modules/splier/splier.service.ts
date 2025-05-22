@@ -5,6 +5,12 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { Splier } from './spiler.model';
 const createSplierIntoDb = async (payload: any) => {
+  const { phone } = payload;
+  const phoneNumber = await Splier.findOne({ phone });
+  if (phoneNumber) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Phone number already exists');
+  }
+
   const result = await Splier.create(payload);
 
   return result;

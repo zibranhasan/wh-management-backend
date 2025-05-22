@@ -14,12 +14,14 @@ router.post(
   validateRequest(stockInValidationSchema),
   inStockController.createInStock,
 );
+router.put('/damage/:stockInId', inStockController.damageStockFromStockIn);
 router.put(
   '/:stockInId',
   validateRequest(updateStockInValidationSchema),
   inStockController.updateInStock,
 );
 router.delete('/:stockInId', inStockController.deleteStockFromStockIn);
+
 router.put(
   '/updateProductFromStockIn/:stockInId/:productId',
   validateRequest(updateProductValidationSchema),

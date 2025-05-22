@@ -1,10 +1,10 @@
-import { StockIn } from './inStock.model';
-import { TStockIn } from './inStock.interface';
-import { Product } from '../product/product.model';
-import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
-import { StockOut } from '../stcokOut/stockOut.model';
+import AppError from '../../errors/AppError';
 import { Expense } from '../expense/expense.model';
+import { Product } from '../product/product.model';
+import { StockOut } from '../stcokOut/stockOut.model';
+import { TStockIn } from './inStock.interface';
+import { StockIn } from './inStock.model';
 
 const CreateInStockIntoDb = async (data: TStockIn) => {
   // Find the product by ID
@@ -36,7 +36,7 @@ const getAllInStockFromDb = async () => {
 const getInternationalInStockIntodb = async () => {
   const result = await StockIn.find({
     isDeleted: false,
-    productType: 'international',
+    productType: 'dubai',
   }).sort({
     createdAt: -1,
   });
@@ -46,7 +46,7 @@ const getInternationalInStockIntodb = async () => {
 const getlocalInStockIntoDb = async () => {
   const result = await StockIn.find({
     isDeleted: false,
-    productType: 'local',
+    productType: 'container',
   }).sort({
     createdAt: -1,
   });
@@ -211,6 +211,32 @@ const updateProductInStockIntoDb = async (
   return result;
 };
 
+const AddDamageQuantityIntoDb = async (
+  stockInId: string,
+
+  damageQuantity: number,
+) => {
+  const stockIn = await StockIn.findById(stockInId);
+
+  if (!stockIn) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Stock Not found');
+  }
+  if (stockIn?.quantity <= 0) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Quantity is not enough to damage',
+    );
+  }
+  const result = await StockIn.findOneAndUpdate(
+    { _id: stockInId },
+
+    { $inc: { quantity: -damageQuantity, damageQuantity: +damageQuantity } },
+
+    { new: true },
+  );
+  return result;
+};
+
 export const inStockService = {
   CreateInStockIntoDb,
   deleteProductStockInFromDb,
@@ -222,4 +248,5 @@ export const inStockService = {
   getStcokAlertFromDb,
   getInternationalInStockIntodb,
   getlocalInStockIntoDb,
+  AddDamageQuantityIntoDb,
 };

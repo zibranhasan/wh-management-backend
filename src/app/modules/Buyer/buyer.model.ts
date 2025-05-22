@@ -27,7 +27,7 @@ const buyerSchema = new Schema<TBuyer>({
       reviceBy: { type: String, required: true },
     },
   ],
-
+  createdBy: { type: String, required: true },
   totalPurchase: { type: Number, default: 0 },
   totalDue: { type: Number, default: 0 },
   date: { type: Date, default: Date.now },
