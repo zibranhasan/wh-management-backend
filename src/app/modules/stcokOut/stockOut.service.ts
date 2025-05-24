@@ -55,7 +55,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
     // console.log(LoggeUser);
 
     if (!LoggeUser) {
-      throw new AppError(httpStatus.NOT_FOUND, 'Buyer not found');
+      throw new AppError(httpStatus.NOT_FOUND, 'User not found');
     }
 
     const SalesManName = LoggeUser?.name;
@@ -119,7 +119,10 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
       ],
       { session },
     );
-    console.log(outStockRecord);
+    // console.log(outStockRecord);
+
+    const stockOutRecodForid = outStockRecord[0];
+
     const buyerUpdate = await Buyer.findByIdAndUpdate(
       isBuyer._id,
       {
@@ -134,11 +137,13 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
             productName: Product.name,
             quantity,
             orderDate: new Date(),
+            stockOutId: stockOutRecodForid._id,
           },
           paymentHistory: {
             amount: paidAmount,
             date: new Date(),
             reviceBy: SalesManName,
+            stockOutId: stockOutRecodForid._id,
           },
         },
       },
@@ -292,19 +297,89 @@ const getLast30DaysSalesFromDb = async (req: any) => {
   };
 };
 
+// const deletedSingleStcokOutFromDb = async (id: string) => {
+//   const result = await StockOut.findByIdAndUpdate(
+//     id,
+//     {
+//       isDeleted: true,
+//     },
+//     { new: true },
+//   );
+//   if (!result) {
+//     throw new AppError(httpStatus.NOT_FOUND, 'No OutStock found');
+//   }
+//   return result;
+// };
+
 const deletedSingleStcokOutFromDb = async (id: string) => {
-  const result = await StockOut.findByIdAndUpdate(
-    id,
-    {
-      isDeleted: true,
-    },
-    { new: true },
-  );
-  if (!result) {
-    throw new AppError(httpStatus.NOT_FOUND, 'No OutStock found');
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // 1. Find the StockOut record
+    const stockOut = await StockOut.findById(id).session(session);
+    if (!stockOut || stockOut.isDeleted) {
+      throw new AppError(httpStatus.NOT_FOUND, 'No OutStock found');
+    }
+
+    // 2. Mark StockOut as deleted
+    stockOut.isDeleted = true;
+    await stockOut.save({ session });
+
+    // 3. Restore quantity in StockIn
+    await StockIn.findByIdAndUpdate(
+      stockOut.product,
+      { $inc: { quantity: stockOut.quantity } },
+      { session },
+    );
+
+    // 4. Update Buyer totals and remove product/payment history
+    await Buyer.findByIdAndUpdate(
+      stockOut.buyerName,
+      {
+        $inc: {
+          totalPurchase: -(stockOut.totalAmount ?? 0),
+          totalDue: -(stockOut.dueAmount ?? 0),
+          totalPay: -(stockOut.paidAmount ?? 0),
+        },
+        $pull: {
+          products: {
+            // orderDate: { $eq: new Date(stockOut.date) },
+
+            stockOutId: stockOut._id,
+          },
+          paymentHistory: {
+            // date: { $eq: new Date(stockOut.date) },
+            stockOutId: stockOut._id,
+          },
+        },
+      },
+      { session },
+    );
+
+    // 5. Update Salesman totals
+    await User.findByIdAndUpdate(
+      stockOut.salesman,
+      {
+        $inc: {
+          totalSale: -(stockOut.totalAmount ?? 0),
+          totalSalesDue: -(stockOut.dueAmount ?? 0),
+        },
+      },
+      { session },
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return stockOut;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-  return result;
 };
+
 const getSingleStockOutIntoDb = async (id: string) => {
   const result = await StockOut.findById(id)
     .populate('buyerName')

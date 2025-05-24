@@ -10,6 +10,7 @@ export type TBuyer = {
     amount: number;
     date: Date;
     reviceBy: string;
+    stockOutId: string;
   }[];
   date?: Date;
   totalPay?: number;
