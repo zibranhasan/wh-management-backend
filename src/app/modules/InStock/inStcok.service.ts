@@ -37,9 +37,11 @@ const getInternationalInStockIntodb = async () => {
   const result = await StockIn.find({
     isDeleted: false,
     productType: 'dubai',
-  }).sort({
-    createdAt: -1,
-  });
+  })
+    .sort({
+      createdAt: -1,
+    })
+    .populate('supplierName');
 
   return result;
 };
@@ -47,9 +49,11 @@ const getlocalInStockIntoDb = async () => {
   const result = await StockIn.find({
     isDeleted: false,
     productType: 'container',
-  }).sort({
-    createdAt: -1,
-  });
+  })
+    .sort({
+      createdAt: -1,
+    })
+    .populate('supplierName');
 
   return result;
 };

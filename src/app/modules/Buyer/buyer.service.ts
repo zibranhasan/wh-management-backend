@@ -149,6 +149,7 @@ const updateBuyerDueAmountFromDb = async (
           paymentHistory: {
             amount: paidAmount,
             reviceBy: SalesManName,
+            // stockOutId: '', // Assuming stockOutId is not provided in this context
             date: new Date(),
           },
         },

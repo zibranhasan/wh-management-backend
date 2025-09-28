@@ -80,7 +80,7 @@ const forgetPassword = async (email: string) => {
 
   sendEmail(user.email, resetUILink);
 
-  console.log(resetUILink);
+  // console.log(resetUILink);
 };
 
 export const authService = {

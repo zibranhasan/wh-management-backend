@@ -28,6 +28,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
       paidAmount = 0,
       quantity,
       buyerPhone,
+      date,
       sellingPrice,
       discount = 0,
     } = payload;
@@ -103,6 +104,7 @@ const CreateStockOutIntoDb = async (payload: ToutStock, userId: string) => {
     const outStockRecord = await StockOut.create(
       [
         {
+          date,
           product,
           paidAmount,
           totalAmount,
